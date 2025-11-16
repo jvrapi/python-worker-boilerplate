@@ -1,0 +1,35 @@
+# Python-generated files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+.python-version
+*.egg-info/
+dist/
+build/
+wheels/
+
+# Virtual environments
+.env
+.venv
+.vscode*
+venv/
+env/
+.poetry/
+
+# Docker files
+*.dockerignore
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Dev or test files
+*.swp
+*.swo
+stdout*
+.coverage
+.mypy_cache/
+.pytest_cache/
+htmlcov/
