@@ -1,0 +1,2 @@
+class HelloCommand:
+    name: str

@@ -23,7 +23,7 @@ format:
 	uv run ruff check --fix .
 
 run:
-	PYTHONPATH=app uv run python src/main.py
+	PYTHONPATH=src uv run python src/main.py
 
 docker-build:
 	docker build -t sqs-worker:latest .

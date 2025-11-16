@@ -11,8 +11,11 @@ import asyncio
 from dotenv import find_dotenv, load_dotenv
 
 import entry_point.http.health as health
+from core.entities.hello_command import HelloCommand
+from core.use_cases.say_hello import SayHelloUseCase
+from entry_point.sqs import SQSConsumer
 from infra.adapters.logging import logger
-from infra.config import get_settings
+from infra.config import QueueConfig, get_settings
 
 load_dotenv(find_dotenv())
 
@@ -24,7 +27,7 @@ async def main() -> None:
     health_server = health.HealthServer(
         host=settings.health_check_host,
         port=settings.health_check_port,
-        health_check=lambda: all(c.is_healthy for c in []),
+        health_check=lambda: all(c.is_healthy for c in consumers),
     )
 
     health_task = asyncio.create_task(health_server.start())
@@ -35,8 +38,21 @@ async def main() -> None:
         environment=settings.environment,
     )
 
-    # Aqui deve ir as configurações de cada consumer
-    #
+    consumers: list[SQSConsumer] = [
+        SQSConsumer(
+            queue_config=QueueConfig(
+                queue_url=settings.sqs_queue_url,
+                max_concurrent_messages=settings.max_concurrent_messages,
+                wait_time_seconds=settings.wait_time_seconds,
+                visibility_timeout=settings.visibility_timeout,
+                max_number_of_messages=settings.max_number_of_messages,
+            ),
+            command=HelloCommand,
+            use_case=SayHelloUseCase(
+                logger=logger,
+            ),
+        )
+    ]
 
     await asyncio.sleep(1)
     health_server.mark_ready()

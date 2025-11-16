@@ -12,12 +12,67 @@ class Settings(BaseSettings):
     Application settings loaded from environment variables and optional .env file.
     """
 
+    # SQS Configuration
+    sqs_queue_url: str = Field(
+        ...,
+        description="SQS queue URL",
+        validation_alias=AliasChoices("SQS_QUEUE_URL", "QUEUE_URL"),
+    )
+    aws_region: str = Field(
+        "us-east-1",
+        description="AWS region",
+        validation_alias=AliasChoices("AWS_REGION", "AWS_DEFAULT_REGION", "REGION"),
+    )
+    aws_access_key_id: Optional[str] = Field(
+        None,
+        description="AWS access key id",
+        validation_alias=AliasChoices("AWS_ACCESS_KEY_ID", "AWS_ACCESS_KEY"),
+    )
+    aws_secret_access_key: Optional[str] = Field(
+        None,
+        description="AWS secret access key",
+        validation_alias=AliasChoices("AWS_SECRET_ACCESS_KEY", "AWS_SECRET_KEY"),
+    )
+    aws_endpoint_url: Optional[str] = Field(
+        None,
+        description="AWS endpoint URL (e.g., LocalStack)",
+        validation_alias=AliasChoices(
+            "AWS_ENDPOINT_URL", "SQS_ENDPOINT", "ENDPOINT_URL"
+        ),
+    )
+    # S3
+    s3_bucket_name: str | None = Field(
+        None,
+        description="S3 bucket name",
+        validation_alias=AliasChoices("S3_BUCKET_NAME"),
+    )
+
     # Worker Configuration
     max_concurrent_messages: int = Field(
         10,
         ge=1,
         description="Maximum number of concurrent messages processed by the worker",
         validation_alias=AliasChoices("MAX_CONCURRENT_MESSAGES"),
+    )
+    wait_time_seconds: int = Field(
+        20,
+        ge=0,
+        le=20,  # SQS long polling max wait time is 20 seconds
+        description="Long polling wait time for SQS receive",
+        validation_alias=AliasChoices("WAIT_TIME_SECONDS"),
+    )
+    visibility_timeout: int = Field(
+        30,
+        ge=0,
+        description="SQS visibility timeout, in seconds",
+        validation_alias=AliasChoices("VISIBILITY_TIMEOUT"),
+    )
+    max_number_of_messages: int = Field(
+        10,
+        ge=1,
+        le=10,  # SQS receives up to 10 messages per request
+        description="Max number of messages per SQS receive request",
+        validation_alias=AliasChoices("MAX_NUMBER_OF_MESSAGES"),
     )
 
     # Health Check Configuration
