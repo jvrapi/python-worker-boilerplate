@@ -6,10 +6,9 @@ import sys
 from typing import Optional
 
 import structlog
-from structlog.processors import CallsiteParameter, CallsiteParameterAdder
-
 from core.ports.logger import Logger
 from infra.config import Settings, get_settings
+from structlog.processors import CallsiteParameter, CallsiteParameterAdder
 
 
 class StructLogLogger(Logger):

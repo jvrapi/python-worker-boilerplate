@@ -5,7 +5,10 @@ include .env
 export
 endif
 
-install: ## Install dependencies
+install-dev: ## Install dev dependencies
+	uv sync --all-groups
+
+install: ## Install production dependencies
 	uv sync
 
 test:

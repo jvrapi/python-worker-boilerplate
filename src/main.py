@@ -8,11 +8,10 @@ Architecture simplified: SQS Consumer → Handler → Domain Logic
 
 import asyncio
 
-from dotenv import find_dotenv, load_dotenv
-
 import entry_point.http.health as health
 from core.entities.hello_command import HelloCommand
 from core.use_cases.say_hello import SayHelloUseCase
+from dotenv import find_dotenv, load_dotenv
 from entry_point.sqs import SQSConsumer
 from infra.adapters.logging import logger
 from infra.config import QueueConfig, get_settings
